@@ -2,16 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta http-equiv="refresh" content="15">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Agronomists</title>
   <link href="agronomist.jpg" rel="icon"/>
   <style>
     @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap");
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
       --app-bg-dark: rgba(1, 8, 31, 0.9);
@@ -118,7 +115,6 @@
       cursor: pointer;
       transition: all 0.3s ease;
     }
-    .language-selector select:hover { background: var(--list-item-hover); }
 
     .nav-menu-toggle {
       display: none;
@@ -130,7 +126,6 @@
       cursor: pointer;
       transition: all 0.3s ease;
     }
-    .nav-menu-toggle:hover { background: var(--list-item-hover); }
 
     .app-container {
       flex: 1;
@@ -156,7 +151,7 @@
       background: var(--glass-bg);
       backdrop-filter: blur(15px);
       height: 100%;
-      padding: 60px 0 20px; /* Increased top padding to avoid nav overlap */
+      padding: 60px 0 20px;
       display: flex;
       flex-direction: column;
       transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
@@ -164,7 +159,7 @@
       position: fixed;
       top: 0;
       right: 0;
-      z-index: 200; /* Higher than nav-bar */
+      z-index: 200;
       border-left: var(--glass-border);
       box-shadow: var(--glass-shadow);
       border-radius: 16px 0 0 16px;
@@ -204,6 +199,11 @@
       font-size: 24px;
       font-weight: 600;
       letter-spacing: 0.5px;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 8px;
     }
 
     .chart-row {
@@ -266,6 +266,7 @@
     .circular-chart.blue .circle { stroke: #00cfde; }
     .circular-chart.pink .circle { stroke: #7dff99; }
     .circular-chart.green .circle { stroke: #34c759; }
+    .circular-chart.purple .circle { stroke: #9c27b0; }
     .percentage { fill: #fff; font-size: 0.6em; text-anchor: middle; font-weight: 500; }
     @keyframes progress { 0% { stroke-dasharray: 0 100; } }
 
@@ -317,7 +318,7 @@
       font-weight: 600;
     }
 
-    .open-right-area {
+    .open-right-area, #generate-report-btn {
       display: flex;
       justify-content: center;
       align-items: center;
@@ -329,8 +330,15 @@
       color: var(--main-color);
       backdrop-filter: blur(8px);
       transition: all 0.3s ease;
+      cursor: pointer;
     }
-    .open-right-area:hover { background: var(--list-item-hover); transform: scale(1.05); }
+    .open-right-area:hover, #generate-report-btn:hover { background: var(--list-item-hover); transform: scale(1.05); }
+
+    #generate-report-btn {
+      width: auto;
+      padding: 0 12px;
+      gap: 6px;
+    }
 
     .profile-box {
       display: flex;
@@ -351,13 +359,6 @@
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     }
     .profile-photo-wrapper img { width: 100%; height: 100%; object-fit: cover; }
-    .profile-text, .profile-subtext {
-      font-size: 12px;
-      color: var(--secondary-color);
-      margin: 0 0 10px 0;
-      font-weight: 400;
-      letter-spacing: 0.5px;
-    }
 
     .close-right {
       position: absolute;
@@ -373,7 +374,8 @@
       align-items: center;
       justify-content: center;
       transition: all 0.3s ease;
-      z-index: 210; /* Higher than app-right */
+      z-index: 210;
+      cursor: pointer;
     }
     .close-right:hover { background: var(--list-item-hover); transform: scale(1.1); }
 
@@ -394,6 +396,7 @@
       color: var(--main-color);
       backdrop-filter: blur(8px);
       transition: all 0.3s ease;
+      cursor: pointer;
     }
     .manual-toggle:hover { background: var(--list-item-hover); transform: scale(1.05); }
 
@@ -418,7 +421,75 @@
     .manual-step p { color: var(--secondary-color); font-size: 12px; line-height: 1.6; }
     .manual-step img { width: 100%; max-width: 200px; height: auto; border-radius: 8px; margin-top: 10px; border: var(--glass-border); }
 
-    /* Mobile Responsiveness */
+    /* PDF Modal */
+    .pdf-modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.8);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    .pdf-modal.show { display: flex; }
+
+    .pdf-container {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      max-width: 800px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+      position: relative;
+    }
+
+    .pdf-header {
+      text-align: center;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #158b4e;
+      padding-bottom: 15px;
+    }
+    .pdf-header h1 { color: #158b4e; font-size: 28px; margin: 0; }
+    .pdf-header p { color: #555; font-size: 14px; }
+
+    .pdf-section { margin-bottom: 25px; }
+    .pdf-section h3 { color: #158b4e; font-size: 18px; margin-bottom: 12px; border-left: 4px solid #7dff99; padding-left: 10px; }
+    .pdf-row { display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 15px; }
+    .pdf-item { flex: 1; min-width: 200px; display: flex; align-items: center; gap: 10px; }
+    .pdf-item img { width: 40px; height: 40px; }
+    .pdf-item span { font-weight: 600; color: #333; }
+    .pdf-item small { color: #777; font-size: 11px; }
+
+    .download-btn {
+      display: block;
+      margin: 20px auto 0;
+      padding: 12px 30px;
+      background: #158b4e;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .download-btn:hover { background: #0d6b3a; }
+
+    .close-pdf {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      background: #ddd;
+      border: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
     @media screen and (max-width: 1024px) {
       .app-right { max-width: 80%; }
       .chart-row.three .chart-container-wrapper { flex: 1 1 calc(50% - 20px); max-width: calc(50% - 20px); }
@@ -431,10 +502,6 @@
       .nav-center { display: none; flex-direction: column; position: absolute; top: 100%; left: 0; width: 100%; background: var(--glass-bg); padding: 15px; border-bottom: var(--glass-border); }
       .nav-center.show { display: flex; }
       .nav-menu-toggle { display: block; }
-      .nav-tab { padding: 10px; font-size: 13px; }
-      .nav-right { gap: 10px; }
-      .device-id { font-size: 11px; padding: 5px 8px; }
-      .language-selector select { font-size: 11px; padding: 5px 8px; }
       .app-main { padding: 15px; }
       .app-right { max-width: 90%; padding-top: 50px; }
       .main-header-line h1 { font-size: 20px; }
@@ -445,46 +512,29 @@
 
     @media screen and (max-width: 480px) {
       .nav-title { font-size: 18px; }
-      .nav-title svg { width: 20px; height: 20px; }
-      .nav-tab { font-size: 12px; }
-      .device-id { font-size: 10px; }
-      .language-selector select { font-size: 10px; }
-      .app-container { padding: 10px; }
-      .app-main { padding: 10px; }
-      .chart-row.three .chart-container-wrapper { flex: 1 1 100%; max-width: 100%; }
       .chart-info-wrapper span { font-size: 18px; }
       .chart-info-wrapper img { width: 40px; height: 40px; }
       .chart-svg { flex: 0 0 80px; }
-      .recommendation-card { padding: 15px; }
-      .recommendation-card span { font-size: 16px; }
       .recommendation-card img { width: 40px; height: 40px; }
       .profile-photo-wrapper { width: 60px; height: 60px; }
-      .manual-step img { max-width: 150px; }
     }
   </style>
 </head>
 <body>
+
+  <!-- NAVBAR -->
   <div class="nav-bar">
     <div class="nav-title">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
       <span data-translate="Agronomists">Agronomists</span>
     </div>
     <div class="nav-center">
-      <div class="nav-tab active">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
-        <span data-translate="Dashboard">Dashboard</span>
-      </div>
-      <div class="nav-tab">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-        <span data-translate="Map">Map</span>
-      </div>
-      <div class="nav-tab">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-        <span data-translate="Reports">Reports</span>
-      </div>
+      <div class="nav-tab active"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg><span data-translate="Dashboard">Dashboard</span></div>
+      <div class="nav-tab"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span data-translate="Map">Map</span></div>
+      <div class="nav-tab"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg><span data-translate="Reports">Reports</span></div>
     </div>
     <div class="nav-right">
-      <div class="device-id" id="device-id" data-translate="PRODUCT ID">PRODUCT ID: Loading...</div>
+      <div class="device-id" id="device-id">PRODUCT ID: Loading...</div>
       <div class="language-selector">
         <select id="language">
           <option value="en">English</option>
@@ -493,247 +543,258 @@
         </select>
       </div>
       <button class="nav-menu-toggle">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
       </button>
     </div>
   </div>
 
+  <!-- MAIN CONTENT -->
   <div class="app-container">
     <div class="app-main">
       <div class="main-header-line">
         <h1 data-translate="Agronomist Dashboard">Agronomist Dashboard</h1>
         <div class="action-buttons">
           <button class="open-right-area">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </button>
+          <!-- GENERATE REPORT BUTTON -->
+          <button id="generate-report-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            <span style="font-size:12px;">Generate Report</span>
           </button>
         </div>
       </div>
 
-      <!-- Soil Parameters -->
+      <!-- SOIL PARAMETERS -->
       <div class="chart-row three">
+        <!-- Moisture -->
         <div class="chart-container-wrapper">
           <div class="chart-container">
             <div class="chart-info-wrapper">
-              <img src="moisture.png" alt="Moisture Icon">
-              <div>
-                <h2 data-translate="Moisture">Moisture</h2>
-                <span id="moisture-value">Loading...</span>
-              </div>
+              <img src="moisture.png" alt="Moisture">
+              <div><h2 data-translate="Moisture">Moisture</h2><span id="moisture-value">Loading...</span></div>
             </div>
             <div class="chart-svg">
               <svg viewBox="0 0 36 36" class="circular-chart pink">
                 <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
-                <path class="circle" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+                <path class="circle" stroke-dasharray="0,100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
                 <text x="18" y="20.35" class="percentage" id="moisture-percentage">0</text>
               </svg>
             </div>
           </div>
         </div>
+
+        <!-- Temperature -->
         <div class="chart-container-wrapper">
           <div class="chart-container">
             <div class="chart-info-wrapper">
-              <img src="temperature.png" alt="Temperature Icon">
-              <div>
-                <h2 data-translate="Temperature">Temperature</h2>
-                <span id="temperature-value">Loading...</span>
-              </div>
+              <img src="temperature.png" alt="Temperature">
+              <div><h2 data-translate="Temperature">Temperature</h2><span id="temperature-value">Loading...</span></div>
             </div>
             <div class="chart-svg">
               <svg viewBox="0 0 36 36" class="circular-chart blue">
                 <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
-                <path class="circle" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+                <path class="circle" stroke-dasharray="0,100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
                 <text x="18" y="20.35" class="percentage" id="temperature-percentage">0</text>
               </svg>
             </div>
           </div>
         </div>
+
+        <!-- EC -->
         <div class="chart-container-wrapper">
           <div class="chart-container">
             <div class="chart-info-wrapper">
-              <img src="conductivity.png" alt="Electrical Conductivity Icon">
-              <div>
-                <h2 data-translate="Electrical Conductivity">Electrical Conductivity</h2>
-                <span id="ec-value">Loading...</span>
-              </div>
+              <img src="conductivity.png" alt="EC">
+              <div><h2 data-translate="Electrical Conductivity">Electrical Conductivity</h2><span id="ec-value">Loading...</span></div>
             </div>
             <div class="chart-svg">
               <svg viewBox="0 0 36 36" class="circular-chart orange">
                 <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
-                <path class="circle" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+                <path class="circle" stroke-dasharray="0,100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
                 <text x="18" y="20.35" class="percentage" id="ec-percentage">0</text>
               </svg>
             </div>
           </div>
         </div>
       </div>
+
       <div class="chart-row three">
+        <!-- pH -->
         <div class="chart-container-wrapper">
           <div class="chart-container">
             <div class="chart-info-wrapper">
-              <img src="ph.png" alt="pH Icon">
-              <div>
-                <h2 data-translate="pH Content">pH Content</h2>
-                <span id="ph-value">Loading...</span>
-              </div>
+              <img src="ph.png" alt="pH">
+              <div><h2 data-translate="pH Content">pH Content</h2><span id="ph-value">Loading...</span></div>
             </div>
             <div class="chart-svg">
               <svg viewBox="0 0 36 36" class="circular-chart pink">
                 <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
-                <path class="circle" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+                <path class="circle" stroke-dasharray="0,100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
                 <text x="18" y="20.35" class="percentage" id="ph-percentage">0</text>
               </svg>
             </div>
           </div>
         </div>
+
+        <!-- Nitrogen -->
         <div class="chart-container-wrapper">
           <div class="chart-container">
             <div class="chart-info-wrapper">
-              <img src="nitrogen.png" alt="Nitrogen Icon">
-              <div>
-                <h2 data-translate="Nitrogen">Nitrogen</h2>
-                <span id="nitrogen-value">Loading...</span>
-              </div>
+              <img src="nitrogen.png" alt="Nitrogen">
+              <div><h2 data-translate="Nitrogen">Nitrogen</h2><span id="nitrogen-value">Loading...</span></div>
             </div>
             <div class="chart-svg">
               <svg viewBox="0 0 36 36" class="circular-chart blue">
                 <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
-                <path class="circle" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+                <path class="circle" stroke-dasharray="0,100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
                 <text x="18" y="20.35" class="percentage" id="nitrogen-percentage">0</text>
               </svg>
             </div>
           </div>
         </div>
+
+        <!-- Phosphorus -->
         <div class="chart-container-wrapper">
           <div class="chart-container">
             <div class="chart-info-wrapper">
-              <img src="phosphorus.png" alt="Phosphorus Icon">
-              <div>
-                <h2 data-translate="Phosphorus">Phosphorus</h2>
-                <span id="phosphorus-value">Loading...</span>
-              </div>
+              <img src="phosphorus.png" alt="Phosphorus">
+              <div><h2 data-translate="Phosphorus">Phosphorus</h2><span id="phosphorus-value">Loading...</span></div>
             </div>
             <div class="chart-svg">
               <svg viewBox="0 0 36 36" class="circular-chart orange">
                 <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
-                <path class="circle" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+                <path class="circle" stroke-dasharray="0,100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
                 <text x="18" y="20.35" class="percentage" id="phosphorus-percentage">0</text>
               </svg>
             </div>
           </div>
         </div>
       </div>
+
       <div class="chart-row three">
+        <!-- Potassium -->
         <div class="chart-container-wrapper">
           <div class="chart-container">
             <div class="chart-info-wrapper">
-              <img src="potassium.png" alt="Potassium Icon">
-              <div>
-                <h2 data-translate="Potassium">Potassium</h2>
-                <span id="potassium-value">Loading...</span>
-              </div>
+              <img src="potassium.png" alt="Potassium">
+              <div><h2 data-translate="Potassium">Potassium</h2><span id="potassium-value">Loading...</span></div>
             </div>
             <div class="chart-svg">
               <svg viewBox="0 0 36 36" class="circular-chart pink">
                 <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
-                <path class="circle" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+                <path class="circle" stroke-dasharray="0,100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
                 <text x="18" y="20.35" class="percentage" id="potassium-percentage">0</text>
               </svg>
             </div>
           </div>
         </div>
+
+        <!-- SOC -->
         <div class="chart-container-wrapper">
           <div class="chart-container">
             <div class="chart-info-wrapper">
-              <img src="SOC.png" alt="Soil Organic Carbon Icon">
-              <div>
-                <h2 data-translate="Soil Organic Carbon">Soil Organic Carbon</h2>
-                <span id="soc-value">Loading...</span>
-              </div>
+              <img src="SOC.png" alt="SOC">
+              <div><h2 data-translate="Soil Organic Carbon">Soil Organic Carbon</h2><span id="soc-value">Loading...</span></div>
             </div>
             <div class="chart-svg">
               <svg viewBox="0 0 36 36" class="circular-chart green">
                 <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
-                <path class="circle" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+                <path class="circle" stroke-dasharray="0,100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
                 <text x="18" y="20.35" class="percentage" id="soc-percentage">0</text>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Texture -->
+        <div class="chart-container-wrapper">
+          <div class="chart-container">
+            <div class="chart-info-wrapper">
+              <img src="texture.png" alt="Texture">
+              <div><h2 data-translate="Soil Texture">Soil Texture</h2><span id="texture-value">Loading...</span></div>
+            </div>
+            <div class="chart-svg">
+              <svg viewBox="0 0 36 36" class="circular-chart purple">
+                <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+                <path class="circle" stroke-dasharray="0,100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+                <text x="18" y="20.35" class="percentage" id="texture-percentage">-</text>
               </svg>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Recommendations Section -->
+      <!-- RECOMMENDATIONS -->
       <div class="recommendations-section">
         <div class="recommendation-card">
-          <img src="crop.png" alt="Recommended Crop Icon">
-          <div>
-            <h2 data-translate="Recommended Crop">Recommended Crop</h2>
-            <span id="recommended-crop">Loading...</span>
-          </div>
+          <img src="crop.png" alt="Crop">
+          <div><h2 data-translate="Recommended Crop">Recommended Crop</h2><span id="recommended-crop">Loading...</span></div>
         </div>
         <div class="recommendation-card">
-          <img src="fertilizer.png" alt="Recommended Fertilizer Icon">
-          <div>
-            <h2 data-translate="Recommended Fertilizer">Recommended Fertilizer</h2>
-            <span id="recommended-fertilizer">Loading...</span>
-          </div>
+          <img src="fertilizer.png" alt="Fertilizer">
+          <div><h2 data-translate="Recommended Fertilizer">Recommended Fertilizer</h2><span id="recommended-fertilizer">Loading...</span></div>
         </div>
       </div>
 
-      <!-- Weather and Map -->
+      <!-- WEATHER + MAP -->
       <div class="chart-row two">
         <div class="chart-container-wrapper small">
           <div class="chart-container">
-            <div class="chart-container-header">
-              <h2 class="h_f" data-translate="Weather Information">Weather Information</h2>
-            </div>
+            <div class="chart-container-header"><h2 class="h_f" data-translate="Weather Information">Weather Information</h2></div>
             <div id="location" class="h1_f">Locating...</div>
             <div class="weather-info" id="weather"></div>
           </div>
         </div>
-        <div class="chart-container-wrapper big" style="height: 300px; border-radius: 2em;">
-          <gmp-map center="11.5390, 79.4794" zoom="10" map-id="DEMO_MAP_ID" style="height: 100%; width: 100%; border-radius: 2em;"></gmp-map>
+        <div class="chart-container-wrapper big" style="height:300px;border-radius:2em;">
+          <gmp-map center="11.5390,79.4794" zoom="10" map-id="DEMO_MAP_ID" style="height:100%;width:100%;border-radius:2em;"></gmp-map>
         </div>
       </div>
     </div>
 
+    <!-- RIGHT PANEL -->
     <div class="app-right">
       <button class="close-right">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
       <div class="app-logo">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
         <span data-translate="Agronomists">Agronomists</span>
       </div>
       <div class="profile-box">
-        <div class="profile-photo-wrapper">
-          <img src="agronomist.jpg" alt="product">
-        </div>
+        <div class="profile-photo-wrapper"><img src="agronomist.jpg" alt="product"></div>
         <p class="profile-subtext" data-translate="Device Name">Device Name</p>
       </div>
       <button class="manual-toggle">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6h10v12H2V6z"/><path d="M12 12h10v6H12z"/><path d="M12 6h6v4h-6z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 6h10v12H2V6z"/><path d="M12 12h10v6H12z"/><path d="M12 6h6v4h-6z"/></svg>
       </button>
       <div class="manual-content">
-        <div class="manual-step">
-          <h3 data-translate="STEP I">STEP I: Setup Device</h3>
-          <p>Connect the device to power and insert sensors into soil.</p>
-          <img src="https://via.placeholder.com/200x150" alt="Step 1">
-        </div>
-        <div class="manual-step">
-          <h3 data-translate="STEP II">STEP II: Calibrate Sensors</h3>
-          <p>Adjust settings via the app to calibrate readings.</p>
-          <img src="https://via.placeholder.com/200x150" alt="Step 2">
-        </div>
-        <div class="manual-step">
-          <h3 data-translate="STEP III">STEP III: Monitor Data</h3>
-          <p>View real-time data on the dashboard.</p>
-          <img src="https://via.placeholder.com/200x150" alt="Step 3">
-        </div>
+        <div class="manual-step"><h3 data-translate="STEP I">STEP I: Setup Device</h3><p>Connect the device to power and insert sensors into soil.</p><img src="https://via.placeholder.com/200x150" alt="Step 1"></div>
+        <div class="manual-step"><h3 data-translate="STEP II">STEP II: Calibrate Sensors</h3><p>Adjust settings via the app to calibrate readings.</p><img src="https://via.placeholder.com/200x150" alt="Step 2"></div>
+        <div class="manual-step"><h3 data-translate="STEP III">STEP III: Monitor Data</h3><p>View real-time data on the dashboard.</p><img src="https://via.placeholder.com/200x150" alt="Step 3"></div>
       </div>
     </div>
   </div>
 
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg&libraries=maps&v=beta" defer></script>
+  <!-- PDF MODAL -->
+  <div class="pdf-modal" id="pdf-modal">
+    <div class="pdf-container" id="report-content">
+      <button class="close-pdf" id="close-pdf">×</button>
+      <div class="pdf-header">
+        <h1>Agronomist Soil Report</h1>
+        <p id="report-date"></p>
+      </div>
+      <div class="pdf-section"><h3>Sensor Parameters</h3><div class="pdf-row" id="sensor-rows"></div></div>
+      <div class="pdf-section"><h3>Recommendations</h3><div class="pdf-row" id="recommendation-rows"></div></div>
+      <div class="pdf-section"><h3>Weather</h3><div class="pdf-row" id="weather-rows"></div></div>
+      <button class="download-btn" id="download-pdf">Download PDF</button>
+    </div>
+  </div>
+
+  <!-- SCRIPTS -->
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg&libraries=maps&v=beta" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js"></script>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
     import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-database.js";
@@ -745,14 +806,150 @@
       projectId: "soilparameters",
       storageBucket: "soilparameters.firebasestorage.app",
       messagingSenderId: "372898983262",
-      appId: "1:372898983262:web:7e0ca517a932ef0592b3cf",
-      measurementId: "G-EL6L3KJXYG"
+      appId: "1:372898983262:web:7e0ca517a932ef0592b3cf"
     };
 
     const app = initializeApp(firebaseConfig);
-    const database = getDatabase(app);
-    const sensorDataRef = ref(database, 'sensor_data');
+    const db = getDatabase(app);
+    const sensorRef = ref(db, 'sensor_data');
+    const predictionRef = ref(db, 'prediction_data');
 
+    const latest = { sensor: {}, prediction: {}, weatherHTML: '' };
+
+    function updateSensorUI(data) {
+      const map = {
+        Moisture:      { id:'moisture-value',      perc:'moisture-percentage',      max:100, unit:'%' },
+        Temperature:   { id:'temperature-value',   perc:'temperature-percentage',   max:50,  unit:'°C' },
+        EC:            { id:'ec-value',            perc:'ec-percentage',            max:20,  unit:'µS/cm' },
+        pH:            { id:'ph-value',            perc:'ph-percentage',            max:14,  unit:'' },
+        Nitrogen:      { id:'nitrogen-value',      perc:'nitrogen-percentage',      max:50,  unit:'mg/kg' },
+        Phosphorous:   { id:'phosphorus-value',    perc:'phosphorus-percentage',    max:50,  unit:'mg/kg' },
+        Potassium:     { id:'potassium-value',     perc:'potassium-percentage',     max:50,  unit:'mg/kg' }
+      };
+
+      Object.entries(map).forEach(([key, cfg]) => {
+        const val = data[key] ?? 0;
+        document.getElementById(cfg.id).textContent = `${val} ${cfg.unit}`;
+        document.getElementById(cfg.perc).textContent = Math.round(val);
+        const circle = document.getElementById(cfg.id).closest('.chart-info-wrapper').nextElementSibling.querySelector('.circle');
+        if (circle) {
+          const percent = Math.min((val / cfg.max) * 100, 100);
+          circle.setAttribute('stroke-dasharray', `${percent},100`);
+        }
+      });
+
+      const devId = data.DeviceID || 'AGR-001';
+      document.getElementById('device-id').textContent = `PRODUCT ID: ${devId}`;
+      latest.sensor = data;
+    }
+
+    function updatePredictionUI(data) {
+      document.getElementById('recommended-crop').textContent = data.Crop || 'N/A';
+      document.getElementById('recommended-fertilizer').textContent = data.Fertilizer || 'N/A';
+      const soc = data.SOC !== undefined ? data.SOC.toFixed(4) : 'N/A';
+      document.getElementById('soc-value').textContent = `${soc} %`;
+      document.getElementById('soc-percentage').textContent = soc;
+      document.getElementById('texture-value').textContent = data.Texture || 'N/A';
+      latest.prediction = data;
+    }
+
+    onValue(sensorRef, snap => { const d = snap.val(); if (d) updateSensorUI(d); });
+    onValue(predictionRef, snap => { const d = snap.val(); if (d) updatePredictionUI(d); });
+
+    // Weather
+    const locEl = document.getElementById('location');
+    const weatherEl = document.getElementById('weather');
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(pos => {
+        const { latitude: lat, longitude: lon } = pos.coords;
+        fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=623a2e2f8257c10827ed28570f40a00c`)
+          .then(r => r.json())
+          .then(d => {
+            locEl.textContent = `Location: ${d.name}, ${d.sys.country}`;
+            const html = `<p class="w_f">Temperature: ${d.main.temp}°C</p><p class="w_f">Humidity: ${d.main.humidity}%</p><p class="w_f">Clouds: ${d.clouds.all}%</p><p class="w_f">Wind: ${d.wind.speed} m/s</p>`;
+            weatherEl.innerHTML = html;
+            latest.weatherHTML = html;
+          })
+          .catch(() => { locEl.textContent = 'Weather unavailable'; });
+      }, () => { locEl.textContent = 'Geolocation denied'; });
+    }
+
+    // Generate Report Button
+    document.getElementById('generate-report-btn').addEventListener('click', () => {
+      if (!latest.sensor.DeviceID && !latest.prediction.Crop) {
+        alert('Waiting for data…');
+        return;
+      }
+      const date = new Date().toLocaleString();
+      document.getElementById('report-date').textContent = `Generated: ${date} | Device: ${latest.sensor.DeviceID || 'N/A'}`;
+
+      const sensorHTML = `
+        ${item('moisture.png',      'Moisture',      `${latest.sensor.Moisture ?? 0} %`)}
+        ${item('temperature.png',   'Temperature',   `${latest.sensor.Temperature ?? 0} °C`)}
+        ${item('conductivity.png',  'EC',            `${latest.sensor.EC ?? 0} µS/cm`)}
+        ${item('ph.png',            'pH',            `${latest.sensor.pH ?? 0}`)}
+        ${item('nitrogen.png',      'Nitrogen',      `${latest.sensor.Nitrogen ?? 0} mg/kg`)}
+        ${item('phosphorus.png',    'Phosphorus',    `${latest.sensor.Phosphorous ?? 0} mg/kg`)}
+        ${item('potassium.png',     'Potassium',     `${latest.sensor.Potassium ?? 0} mg/kg`)}
+        ${item('SOC.png',           'SOC',           `${(latest.prediction.SOC ?? 0).toFixed(4)} %`)}
+        ${item('texture.png',       'Texture',       `${latest.prediction.Texture ?? 'N/A'}`)}
+      `;
+      document.getElementById('sensor-rows').innerHTML = sensorHTML;
+
+      document.getElementById('recommendation-rows').innerHTML = `
+        ${item('crop.png',       'Recommended Crop',       latest.prediction.Crop ?? 'N/A')}
+        ${item('fertilizer.png', 'Recommended Fertilizer', latest.prediction.Fertilizer ?? 'N/A')}
+      `;
+
+      document.getElementById('weather-rows').innerHTML = `<div class="pdf-item"><span>${latest.weatherHTML || 'No data'}</span></div>`;
+
+      document.getElementById('pdf-modal').classList.add('show');
+    });
+
+    function item(icon, label, value) {
+      return `<div class="pdf-item"><img src="${icon}" alt="${label}"><div><span>${value}</span><br><small>${label}</small></div></div>`;
+    }
+
+  document.getElementById('download-pdf').onclick = () => {
+  const mapContainer = document.getElementById('map-container');
+  mapContainer.style.display = 'none'; // Hide map to avoid canvas taint
+
+  setTimeout(() => {
+    html2pdf()
+      .from(document.getElementById('report-content'))
+      .set({
+        margin: 1,
+        filename: `Agronomist_Report_${latest.sensor.DeviceID || 'Unknown'}_${new Date().toISOString().slice(0,10)}.pdf`,
+        html2canvas: { scale: 2, useCORS: true, allowTaint: false },
+        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+      })
+      .save()
+      .then(() => {
+        mapContainer.style.display = 'block';
+        document.getElementById('pdf-modal').classList.remove('show');
+      })
+      .catch(err => {
+        console.error('PDF Error:', err);
+        alert('PDF failed. Check console.');
+        mapContainer.style.display = 'block';
+      });
+  }, 500);
+};
+
+    // Close modal (still works)
+    document.getElementById('close-pdf').onclick = () => {
+      document.getElementById('pdf-modal').classList.remove('show');
+    };
+
+    // UI Interactions
+    document.querySelector('.nav-menu-toggle').onclick = () => document.querySelector('.nav-center').classList.toggle('show');
+    document.querySelector('.open-right-area').onclick = () => document.querySelector('.app-right').classList.add('show');
+    document.querySelector('.close-right').onclick = () => document.querySelector('.app-right').classList.remove('show');
+    document.querySelector('.manual-toggle').onclick = () => document.querySelector('.manual-content').classList.toggle('show');
+  </script>
+
+  <!-- TRANSLATIONS -->
+  <script>
     const translations = {
       en: {
         "Agronomists": "Agronomists",
@@ -770,6 +967,7 @@
         "Soil Organic Carbon": "Soil Organic Carbon",
         "Recommended Crop": "Recommended Crop",
         "Recommended Fertilizer": "Recommended Fertilizer",
+        "Soil Texture": "Soil Texture",
         "Weather Information": "Weather Information",
         "PRODUCT ID": "PRODUCT ID",
         "Device Name": "Device Name",
@@ -793,6 +991,7 @@
         "Soil Organic Carbon": "மண் கரிம கார்பன்",
         "Recommended Crop": "பரிந்துரைக்கப்பட்ட பயிர்",
         "Recommended Fertilizer": "பரிந்துரைக்கப்பட்ட உரம்",
+        "Soil Texture": "மண் அமைப்பு",
         "Weather Information": "வானிலை தகவல்",
         "PRODUCT ID": "பொருள் அடையாளம்",
         "Device Name": "சாதன பெயர்",
@@ -814,8 +1013,9 @@
         "Phosphorus": "फॉस्फोरस",
         "Potassium": "पोटैशियम",
         "Soil Organic Carbon": "मिट्टी का कार्बनिक कार्बन",
-        "Recommended Crop": "अनुशंसित फसल",
-        "Recommended Fertilizer": "अनुशंसित उर्वरक",
+        "Recommended Crop": "भविष्यवाणी की गई फसल",
+        "Recommended Fertilizer": "भविष्यवाणी किया गया उर्वरक",
+        "Soil Texture": "मिट्टी की बनावट",
         "Weather Information": "मौसम जानकारी",
         "PRODUCT ID": "उत्पाद आईडी",
         "Device Name": "डिवाइस का नाम",
@@ -825,117 +1025,13 @@
       }
     };
 
-    document.addEventListener('DOMContentLoaded', () => {
-      onValue(sensorDataRef, (snapshot) => {
-        const data = snapshot.val();
-        if (data) {
-          const maxMoisture = 100;
-          const maxTemp = 50;
-          const maxEC = 20;
-          const maxPH = 14;
-          const maxNutrient = 50;
-          const maxSOC = 10;
-
-          const updateValue = (valueId, value, unit, percentageId, max) => {
-            const valueElement = document.getElementById(valueId);
-            const percentageElement = document.getElementById(percentageId);
-            const circleElement = document.querySelector(`#${valueId}`).parentElement.parentElement.nextElementSibling?.querySelector('.circle');
-            if (valueElement && percentageElement && circleElement) {
-              const scaled = (value / max) * 100;
-              valueElement.textContent = `${value} ${unit}`;
-              percentageElement.textContent = value;
-              circleElement.setAttribute('stroke-dasharray', `${scaled}, 100`);
-            }
-          };
-
-          updateValue('moisture-value', data.Moisture || 0, '%', 'moisture-percentage', maxMoisture);
-          updateValue('temperature-value', data.Temperature || 0, '°C', 'temperature-percentage', maxTemp);
-          updateValue('ec-value', data.EC || 0, 'us/cm', 'ec-percentage', maxEC);
-          updateValue('ph-value', data.pH || 0, 'pH', 'ph-percentage', maxPH);
-          updateValue('nitrogen-value', data.Nitrogen || 0, 'mg/kg', 'nitrogen-percentage', maxNutrient);
-          updateValue('phosphorus-value', data.Phosphorous || 0, 'mg/kg', 'phosphorus-percentage', maxNutrient);
-          updateValue('potassium-value', data.Potassium || 0, 'mg/kg', 'potassium-percentage', maxNutrient);
-          updateValue('soc-value', data.SoilOrganicCarbon || 0, '%', 'soc-percentage', maxSOC);
-
-          document.getElementById('recommended-crop').textContent = data.RecommendedCrop || 'N/A';
-          document.getElementById('recommended-fertilizer').textContent = data.RecommendedFertilizer || 'N/A';
-          document.getElementById('device-id').textContent = `${translations['en']['PRODUCT ID']}: ${data.DeviceID || 'AGR-001'}`;
-        } else {
-          document.querySelectorAll('.chart-info-wrapper span').forEach(span => span.textContent = 'No Data');
-          document.getElementById('recommended-crop').textContent = 'No Data';
-          document.getElementById('recommended-fertilizer').textContent = 'No Data';
-          document.getElementById('device-id').textContent = `${translations['en']['PRODUCT ID']}: N/A`;
-        }
-      }, (error) => {
-        console.error('Error fetching Firebase data:', error);
-        document.querySelectorAll('.chart-info-wrapper span').forEach(span => span.textContent = 'Error');
-        document.getElementById('recommended-crop').textContent = 'Error';
-        document.getElementById('recommended-fertilizer').textContent = 'Error';
-        document.getElementById('device-id').textContent = `${translations['en']['PRODUCT ID']}: Error`;
+    document.getElementById('language').onchange = e => {
+      const lang = e.target.value;
+      document.querySelectorAll('[data-translate]').forEach(el => {
+        const key = el.getAttribute('data-translate');
+        el.textContent = translations[lang][key] || el.textContent;
       });
-
-      const locationElement = document.getElementById('location');
-      const weatherElement = document.getElementById('weather');
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(showPosition, showError);
-      } else {
-        locationElement.textContent = "Geolocation not supported.";
-      }
-
-      function showPosition(position) {
-        const lat = position.coords.latitude;
-        const lon = position.coords.longitude;
-        const apiKey = '623a2e2f8257c10827ed28570f40a00c';
-        const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${apiKey}`;
-
-        fetch(url)
-          .then(response => response.json())
-          .then(data => {
-            locationElement.textContent = `Location: ${data.name}, ${data.sys.country}`;
-            weatherElement.innerHTML = `
-              <p class="w_f">Temperature: ${data.main.temp}°C</p>
-              <p class="w_f">Humidity: ${data.main.humidity}%</p>
-              <p class="w_f">Clouds: ${data.clouds.all}%</p>
-              <p class="w_f">Wind Speed: ${data.wind.speed} m/s</p>
-            `;
-          })
-          .catch(error => {
-            locationElement.textContent = 'Unable to retrieve weather data';
-            console.error('Error:', error);
-          });
-      }
-
-      function showError(error) {
-        locationElement.textContent = "Geolocation error: " + error.message;
-      }
-
-      document.getElementById('language').addEventListener('change', (e) => {
-        const lang = e.target.value;
-        document.querySelectorAll('[data-translate]').forEach(element => {
-          const key = element.getAttribute('data-translate');
-          element.textContent = translations[lang][key];
-          const deviceIdElement = document.getElementById('device-id');
-          const currentId = deviceIdElement.textContent.split(': ')[1] || 'N/A';
-          deviceIdElement.textContent = `${translations[lang]['PRODUCT ID']}: ${currentId}`;
-        });
-      });
-
-      document.querySelector('.nav-menu-toggle').addEventListener('click', () => {
-        document.querySelector('.nav-center').classList.toggle('show');
-      });
-
-      document.querySelector('.open-right-area').addEventListener('click', () => {
-        document.querySelector('.app-right').classList.add('show');
-      });
-      document.querySelector('.close-right').addEventListener('click', () => {
-        document.querySelector('.app-right').classList.remove('show');
-      });
-
-      document.querySelector('.manual-toggle').addEventListener('click', () => {
-        const manualContent = document.querySelector('.manual-content');
-        manualContent.classList.toggle('show');
-      });
-    });
+    };
   </script>
 </body>
 </html>
